@@ -1,8 +1,5 @@
 import React, {useState} from "react";
-import { createBrowserHistory } from 'history';
-import {Route, Router, Navigate} from "react-router-dom"
 import { useNavigate } from "react-router-dom";
-import { Navbar, Nav, Container } from "react-bootstrap";
 import '../App.css';
 function Welcome() {
     const [password, setPassword] = useState('');
@@ -12,23 +9,20 @@ function Welcome() {
 
     async function submitUserdata () {
         setErrorMessage("")
-        const response = await fetch('https://reqres.in/api/posts', {
+        const response = await fetch('http://localhost:8000/users/login', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "userlogin": [{
-                    status: 1,
                     email: email,
                     password: password,
-                }]
             })
         })
         const data = await response.json();
         console.log(JSON.stringify(data));
-        if (data.userlogin[0].status == 1) { //Je nach Rückgabe abzuändern
+        if (data.authenticated == true) { //Je nach Rückgabe abzuändern
             console.log("Success")
             navigate(`/main`)
         } else {
@@ -39,8 +33,8 @@ function Welcome() {
     return (
             <form>
                 <div className="mb-3">
-                    <label htmlFor="InputEmail1" className="form-label">E-Mail-Adresse</label>
-                    <input type="email" className="form-control" id="InputEmail1" onChange={e => setEmail(e.target.value)}/>
+                    <label htmlFor="InputEmail" className="form-label">E-Mail-Adresse</label>
+                    <input type="email" className="form-control" id="InputEmail" onChange={e => setEmail(e.target.value)}/>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="InputPassword" className="form-label">Passwort</label>

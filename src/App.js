@@ -3,6 +3,7 @@ import Welcome from "./pages/welcome"
 import NotFound from "./pages/notfound";
 import {Container, Nav, Navbar} from "react-bootstrap";
 import Main from "./pages/main";
+import Signup from "./pages/signup";
 function App() {
   return (
       <div className="App">
@@ -14,10 +15,11 @@ function App() {
               </Container>
           </Navbar>
         <Routes>
-          <Route path='/' element={<Navigate replace to='/welcome' />} />
-          <Route path="/welcome" element={<Welcome />} />
+            <Route path='/' element={<Navigate replace to='/welcome' />} />
+            <Route path="/welcome" element={<Welcome />} />
             <Route path="/main" element={<Main />} />
-          <Route path='*' element={<NotFound />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path='*' element={<NotFound />} />
         </Routes>
       </div>
   );
