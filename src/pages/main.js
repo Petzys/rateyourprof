@@ -1,11 +1,16 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {replaceBehavior} from "@testing-library/user-event/dist/keyboard/plugins";
 
 function NotFound() {
     const [ErrorMessage, setErrorMessage] = useState('');
     const [search, setSearch] = useState('');
     const [results, setResults] = useState([]);
+    const [data, setData] = useState({})
     let navigate = useNavigate();
+    useEffect(() => {
+        submitSearch();
+    }, []);
     //setResults(React.createElement('a', {key: 1, href:"/welcome", className:"list-group-item list-group-item-action active"}, "Hallo"))
     async function submitSearch () {
         setResults([])
@@ -20,6 +25,12 @@ function NotFound() {
                 searchResults:[
                     "Bayreuther",
                     "Preiser",
+                    "Preiser",
+                    "Preiser",
+                    "Preiser",
+                    "Preiser",
+                    "Preiser",
+                    "Preiser",
                 ]
             })
         })
@@ -28,17 +39,10 @@ function NotFound() {
             case 201:
                 console.log("Search successful")
                 //dynamisches Laden der Elemente
-                const data = await response.json()
+                const newData = await response.json()
+                setData(newData)
                 console.log(JSON.stringify(data))
-                for (let x in data.searchResults) {
-                    setResults(results => [...results,
-                        React.createElement('a', {key: x, href:"/prof", className:"list-group-item list-group-item-action"}, data.searchResults[x])]);
-                }
-                //setResults(createList(data))
-                break;
-            case 200:
-                console.log("No search results")
-                setErrorMessage("Deine Suche ergab keine Treffer")
+                getMatches()
                 break;
             default:
                 console.log("Unknown error")
@@ -47,13 +51,29 @@ function NotFound() {
         }
     }
 
-// {data.map((index) => React.createElement('a', {href: "/main", key: index, className: "list-group-item list-group-item-action active"}, "hello"))}
+    function getMatches () {
+        let matchArray = []
+        setResults([])
+        if (search.length < 3) {
+            return
+        }
+        for (let x in data.searchResults) {
+            let singleResult = data.searchResults[x]
+            if (singleResult.match(search)) {
+                matchArray.push(singleResult)
+            }
+        }
+        for (let i in matchArray) {
+            setResults(results => [...results,
+                React.createElement('a', {key: i, href:"/prof", color:"red", className:"list-group-item list-group-item-action list-group-item-primary"}, matchArray[i])]);
+        }
+    }
 
     return (
         <>
             <div className="mb-3">
                 <label htmlFor="inputSearch" className="form-label">Suche deinen Dozenten</label>
-                <input type="text" id="inputSearch" className="form-control" aria-describedby="passwordHelpBlock" onChange={e => setSearch(e.target.value)}/>
+                <input type="text" id="inputSearch" className="form-control" onChange={e => {setSearch(e.target.value); getMatches();}}/>
             </div>
             <button type="submit" className="btn btn-primary" onClick={() => submitSearch()}>Suchen</button>
             <p>{ErrorMessage}</p>
