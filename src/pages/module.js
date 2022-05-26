@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import shortid from 'shortid';
 
 function Module() {
@@ -7,7 +7,8 @@ function Module() {
     const [ModuleName, setModuleName] = useState('');
     const [ProgressBars, setProgressBars] = useState([])
     let {id} = useParams();
-    let {mod} = useParams()
+    let {mod} = useParams();
+    let navigate = useNavigate();
 
     useEffect(() => {
         call();
@@ -40,7 +41,6 @@ function Module() {
             case 201:
                 console.log("Found Ratings of Module successful")
                 const data = await response.json()
-                console.log(JSON.stringify(data))
                 setModuleName(data.name)
                 const ratings = [data.tempo, data.nachvollziehbarkeit, data.anschaulichkeit, data.interaktivitaet];
                 setProgressBars([createProgressBar(0, ratings), createProgressBar(1, ratings), createProgressBar(2, ratings), createProgressBar(3, ratings)])
@@ -53,7 +53,6 @@ function Module() {
     }
 
     function createProgressBar(num, ratings) {
-        console.log(ratings[num])
         return React.createElement("div", {key: shortid.generate(), className: "progress"},
             React.createElement("div", {
                     key: shortid.generate(),
@@ -110,6 +109,14 @@ function Module() {
                         </tr>
                         </tbody>
                     </table>
+                </div>
+                <div className="row">
+                    <div className="col">
+                        <button type="button" className="btn btn-success" onClick={() => {navigate(`/prof/${id}/module/${mod}/rating`)}}>Rate your Prof!</button>
+                    </div>
+                    <div className="col">
+                        <button type="button" className="btn btn-primary" onClick={() => {navigate(`/prof/${id}/module/${mod}/comments`)}}>Kommentare</button>
+                    </div>
                 </div>
             </div>
             {ErrorMessage}

@@ -2,8 +2,6 @@ import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import '../App.css';
 function Welcome() {
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
     const [ErrorMessage, setErrorMessage] = useState('');
     let navigate = useNavigate();
 
@@ -16,8 +14,8 @@ function Welcome() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                    email: email,
-                    password: password,
+                    email: document.getElementById("InputEmail").value,
+                    password: document.getElementById("InputPassword").value,
             })
         })
         const data = await response.json();
@@ -34,11 +32,11 @@ function Welcome() {
             <form>
                 <div className="mb-3">
                     <label htmlFor="InputEmail" className="form-label">E-Mail-Adresse</label>
-                    <input type="email" className="form-control" id="InputEmail" onChange={e => setEmail(e.target.value)}/>
+                    <input type="email" className="form-control" id="InputEmail"/>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="InputPassword" className="form-label">Passwort</label>
-                    <input type="password" className="form-control" id="InputPassword" onChange={e => setPassword(e.target.value)}/>
+                    <input type="password" className="form-control" id="InputPassword"/>
                 </div>
                 <button type="submit" className="btn btn-primary" onClick={() => submitUserdata()}>Submit</button>
                 <p>{ErrorMessage}</p>

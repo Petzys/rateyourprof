@@ -6,6 +6,8 @@ import Main from "./pages/main";
 import Signup from "./pages/signup";
 import Prof from "./pages/prof";
 import Module from "./pages/module";
+import Rating from "./pages/rating";
+import Comments from "./pages/comments";
 function App() {
   return (
       <div className="App">
@@ -23,6 +25,8 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/prof/:id" element={<Prof />}/>
             <Route path="/prof/:id/module/:mod" element={<Module />} />
+            <Route path="/prof/:id/module/:mod/rating" element={<Rating />} />
+            <Route path="/prof/:id/module/:mod/comments" element={<Comments />} />
             <Route path='*' element={<NotFound />} />
         </Routes>
       </div>
