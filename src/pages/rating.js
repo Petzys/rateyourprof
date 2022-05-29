@@ -1,7 +1,8 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {BsFillStarFill} from 'react-icons/bs';
 import shortid from "shortid";
+import {Covid} from "../components/covid";
 
 function Rating() {
     const [ErrorMessage, setErrorMessage] = useState('');
@@ -9,9 +10,21 @@ function Rating() {
     const [nachStars, setNachStars] = useState([star()])
     const [anschauStars, setAnschauStars] = useState([star()])
     const [interStars, setInterStars] = useState([star()])
+    const [covidStars, setCovidStars] = useState([star()])
+    const [covidNumbers, setCovidNumbers] = useState([0,0,0,0])
     let navigate = useNavigate();
     let {id} = useParams();
     let {mod} = useParams()
+
+    useEffect(() => {
+        const covid = new Covid();
+        covid.getCovidNumbers().then(ans => {
+            setCovidNumbers(ans)
+        }, err => {
+            console.log(err)
+            setErrorMessage("Es ist ein Fehler bei Abrufen der Coronazahlen aufgetreten.")
+        });
+    }, []);
 
     function setStars(id, value) {
         switch (id) {
@@ -43,6 +56,14 @@ function Rating() {
                 setInterStars([])
                 for (let i = 0; i < value; i++) {
                     setInterStars(stars => [...stars,
+                        star()
+                    ])
+                }
+                break;
+            case "covid":
+                setCovidStars([])
+                for (let i = 0; i < value; i++) {
+                    setCovidStars(stars => [...stars,
                         star()
                     ])
                 }
@@ -100,8 +121,8 @@ function Rating() {
             <form onSubmit={submitUserdata}>
                 <div className="container-fluid">
                     <div className="row">
-                        <div className="col">
-                            <h2>Bewerte deine Vorlesung!</h2>
+                        <div className="col m-3">
+                            <h2>Bewerte deine Vorlesung</h2>
                         </div>
                     </div>
                     <div className="row">
@@ -157,13 +178,40 @@ function Rating() {
                             </div>
                         </div>
                     </div>
+                    <div className="row">
+                        <div className="col">
+                            <div className="card p-3 text-dark mb-2 bg-info text-white h-100">
+                                <div className="card-body">
+                                    <h5 className="card-title">COVID-19 Zahlen: Mannheim</h5>
+                                    <p className="card-text" style={{textAlign: "left", lineHeight: 2}}>
+                                        🦠 Fälle in dieser Woche: {covidNumbers[0]}<br/>
+                                        📌 Wocheninzidenz: {covidNumbers[1]}<br/>
+                                        ☠️Tode pro Woche: {covidNumbers[2]}<br/>
+                                        🏛️ Einwohnerzahlen: {covidNumbers[3]}<br/>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col">
+                            <div className="card p-3 mb-2 text-dark bg-light text-white h-100">
+                                <div className="card-body">
+                                    <h5 className="card-title">Umsetzung der COVID-19 Maßnahmen</h5>
+                                    <p className="card-text">
+                                        {covidStars}
+                                    </p>
+                                    <input type="range" className="form-range" defaultValue="0" min="1" max="5"
+                                           id="covid" onChange={e => setStars(e.target.id, e.target.value)}/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-3 m-3">
                     <label htmlFor="titelInput" className="form-label">Titel</label>
                     <input type="text" className="form-control" id="titel"
                            placeholder="Beste Vorlesung aller Zeiten!"/>
                 </div>
-                <div className="mb-3">
+                <div className="mb-3 m-3">
                     <label htmlFor="commentInput" className="form-label">Gib hier deinen Kommentar ein!</label>
                     <textarea className="form-control" id="comment" rows="3" placeholder="Die Zeit verging wie im Flug und ..."></textarea>
                 </div>

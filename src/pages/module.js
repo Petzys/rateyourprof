@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import shortid from 'shortid';
+import {ModuleApi} from "../components/moduleApi";
 
 function Module() {
     const [ErrorMessage, setErrorMessage] = useState('');
@@ -11,46 +12,17 @@ function Module() {
     let navigate = useNavigate();
 
     useEffect(() => {
-        call();
-    }, []);
+        const moduleApi = new ModuleApi();
+        moduleApi.call().then(response => {
+            const ratings = response.ratings
+            const moduleName = response.moduleName
+            setProgressBars([createProgressBar(0, ratings), createProgressBar(1, ratings), createProgressBar(2, ratings), createProgressBar(3, ratings)])
+            setModuleName(moduleName)
+        } ).catch(error => {
+            setErrorMessage("Es ist ein Fehler aufgetreten: " + error)
+        });
 
-    async function call() {
-        setErrorMessage("")
-        const response = await fetch('https://reqres.in/api/posts', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            /*body: JSON.stringify({
-                email: "Testmail232344",
-                password: "1234",
-                prof: Number(id),
-                module: Number(mod),
-            })*/
-            body: JSON.stringify({
-                name: "Mathematik",
-                tempo: 30,
-                nachvollziehbarkeit: 87,
-                anschaulichkeit: 34,
-                interaktivitaet: 35,
-            })
-        })
-        const responseCode = response.status;
-        switch (responseCode) {
-            case 201:
-                console.log("Found Ratings of Module successful")
-                const data = await response.json()
-                setModuleName(data.name)
-                const ratings = [data.tempo, data.nachvollziehbarkeit, data.anschaulichkeit, data.interaktivitaet];
-                setProgressBars([createProgressBar(0, ratings), createProgressBar(1, ratings), createProgressBar(2, ratings), createProgressBar(3, ratings)])
-                break;
-            default:
-                console.log("Unknown error")
-                setErrorMessage("Es ist ein Fehler aufgetreten.")
-                break;
-        }
-    }
+    }, []);
 
     function createProgressBar(num, ratings) {
         return React.createElement("div", {key: shortid.generate(), className: "progress"},
