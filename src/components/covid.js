@@ -9,7 +9,7 @@ class Covid {
             case 200:
                 try {
                     console.log("API call successful")
-                    const ans = response.data[districtNum];
+                    const ans = response.data.data[districtNum];
                     console.log(JSON.stringify(ans))
                     return([
                         ans.casesPerWeek,
