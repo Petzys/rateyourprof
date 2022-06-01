@@ -52,27 +52,29 @@ function Signup() {
     }
 
     return (
-        <form>
-            <p>Melde dich direkt an und gib deine Daten ein!</p>
-            <div className="mb-3">
-                <label htmlFor="InputEmail" className="form-label">E-Mail-Adresse</label>
-                <input type="email" className="form-control" id="InputEmail" onChange={e => setEmail(e.target.value)}/>
-            </div>
-            <div className="mb-3">
-                <label htmlFor="InputPassword" className="form-label">Passwort</label>
-                <input type="password" className="form-control" id="InputPassword" onChange={e => setPassword(e.target.value)}/>
-            </div>
-            <div className="mb-3">
-                <label htmlFor="InputForename" className="form-label">Vorname</label>
-                <input type="text" className="form-control" id="InputForename" onChange={e => setForename(e.target.value)}/>
-            </div>
-            <div className="mb-3">
-                <label htmlFor="InputSurname" className="form-label">Nachname</label>
-                <input type="text" className="form-control" id="InputSurname" onChange={e => setSurname(e.target.value)}/>
-            </div>
-            <button type="submit" className="btn btn-primary" onClick={() => submitUserdata()}>Senden</button>
-            <p>{ErrorMessage}</p>
-        </form>
+        <div className="general">
+            <form>
+                <p>Melde dich direkt an und gib deine Daten ein!</p>
+                <div className="mb-3">
+                    <label htmlFor="InputEmail" className="form-label">E-Mail-Adresse</label>
+                    <input type="email" className="form-control" id="InputEmail" onChange={e => setEmail(e.target.value)}/>
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="InputPassword" className="form-label">Passwort</label>
+                    <input type="password" className="form-control" id="InputPassword" onChange={e => setPassword(e.target.value)}/>
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="InputForename" className="form-label">Vorname</label>
+                    <input type="text" className="form-control" id="InputForename" onChange={e => setForename(e.target.value)}/>
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="InputSurname" className="form-label">Nachname</label>
+                    <input type="text" className="form-control" id="InputSurname" onChange={e => setSurname(e.target.value)}/>
+                </div>
+                <button type="submit" className="btn btn-primary" onClick={() => submitUserdata()}>Senden</button>
+                <p>{ErrorMessage}</p>
+            </form>
+        </div>
     );
 }
 export default Signup;

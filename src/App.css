@@ -1,11 +1,43 @@
 .App {
+  margin: 20px auto 0;
+  font-size: 18px;
+}
+
+.general {
   text-align: center;
-  margin:0 auto;
-  width:66%;
+  width: 66%;
+  height: 100%;
+  margin: 20px auto 0;
+  font-size: 18px;
+}
+
+html, body, #app, #app>div {
+  height: 100%;
+  width: 100%;
 }
 
 body {
   color: #fff;
   background: rgb(30,107,174);
-  background: radial-gradient(circle, rgba(30,107,174,1) 0%, rgba(29,104,170,1) 66%, rgba(1,23,55,1) 100%);
+  background: linear-gradient(to top, #1e3c72 0%, #1e3c72 1%, #2a5298 100%);
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #FF7500;
+  border-color: #357ebd;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
+  color: #000000;
+  background-color: #0495c9;
+  border-color: #285e8e;
+}
+
+.list-group-item {
+  background-color: #0495c9;
+  border-color: #357ebd;
+  margin-bottom: 5px;
 }
