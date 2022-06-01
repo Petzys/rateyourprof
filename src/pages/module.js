@@ -40,11 +40,11 @@ function Module() {
     }
 
     return (
-        <>
+        <div className="general">
             <div className="container-fluid">
                 <div className="row">
                     <div className="col">
-                        {React.createElement("h1", null, ModuleName)}
+                        {React.createElement("h1", {style: {marginBottom: 20}}, ModuleName)}
                     </div>
                     <div className="w-100"/>
                     <table className="table table-dark table-striped">
@@ -92,7 +92,7 @@ function Module() {
                 </div>
             </div>
             {ErrorMessage}
-        </>
+        </div>
     );
 }
 

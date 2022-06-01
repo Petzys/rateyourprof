@@ -49,3 +49,4 @@ describe("covid19 api test", () => {
         expect(axiosGetSpy).toHaveBeenCalledWith(mockUrl);
     });
 });
+

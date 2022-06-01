@@ -48,7 +48,7 @@ function Prof() {
                     React.createElement("div", {key: shortid.generate(), className: "card p-3 mb-2 bg-dark text-white"},
                         React.createElement("div", {key: shortid.generate(), className: "card-body"},
                             React.createElement("h5", {key: shortid.generate(), className: "card-title"}, data[x].name),
-                            React.createElement("p", {key: shortid.generate(), className: "card-text"}, "Klicke auf den Button, um zum Modul zu gelangen!"),
+                            React.createElement("p", {key: shortid.generate(), className: "card-text"}),
                             React.createElement("a", {
                                 key: shortid.generate(),
                                 href: `/prof/${id}/module/${data[x].id}`,
@@ -63,7 +63,7 @@ function Prof() {
     }
 
     return (
-        <>
+        <div className="general">
             <div className="container-fluid">
                 <div className="row">
                     <div className="w-100"></div>
@@ -71,7 +71,7 @@ function Prof() {
                 </div>
             </div>
             {ErrorMessage}
-        </>
+        </div>
     );
 }
 

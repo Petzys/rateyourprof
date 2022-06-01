@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import shortid from "shortid";
 
-function NotFound() {
+function Main() {
     const [ErrorMessage, setErrorMessage] = useState('');
     const [search, setSearch] = useState('');
     const [results, setResults] = useState([]);
@@ -51,12 +51,12 @@ function NotFound() {
         }
         for (let i in matchArray) {
             setResults(results => [...results,
-                React.createElement('a', {key: shortid.generate(), href:`/prof/${idArray[i]}`, color:"red", className:"list-group-item list-group-item-action list-group-item-primary"}, matchArray[i])]);
+                React.createElement('a', {key: shortid.generate(), href:`/prof/${idArray[i]}`, className:"list-group-item list-group-item-action list-group-item-primary"}, matchArray[i])]);
         }
     }
 
     return (
-        <>
+        <div className="general">
             <div className="mb-3">
                 <label htmlFor="inputSearch" className="form-label">Suche deinen Dozenten</label>
                 <input type="text" id="inputSearch" className="form-control" onChange={e => {setSearch(e.target.value); getMatches();}}/>
@@ -65,7 +65,7 @@ function NotFound() {
             <div className="list-group">
                 {results}
             </div>
-        </>
+        </div>
     );
 }
-export default NotFound;
+export default Main;

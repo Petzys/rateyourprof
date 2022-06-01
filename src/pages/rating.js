@@ -117,7 +117,7 @@ function Rating() {
     }
 
     return (
-        <>
+        <div className="general">
             <form onSubmit={submitUserdata}>
                 <div className="container-fluid">
                     <div className="row">
@@ -223,7 +223,7 @@ function Rating() {
                 <button type="submit" style={{margin: 20}} className="btn btn-primary">Senden</button>
             </form>
             {ErrorMessage}
-        </>
+        </div>
     );
 }
 
