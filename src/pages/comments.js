@@ -146,6 +146,7 @@ function Comments() {
                     </div>
                 </div>
             </div>
+            {ErrorMessage}
         </div>
     );
 }

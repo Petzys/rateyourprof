@@ -42,6 +42,8 @@ function Signup() {
                     case "name":
                         setErrorMessage("Dein Name existiert bereits!")
                         break;
+                    default:
+                        setErrorMessage("Teile deiner Daten existieren bereits!")
                 }
                 break;
             default:

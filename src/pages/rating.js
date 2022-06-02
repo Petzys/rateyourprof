@@ -3,6 +3,9 @@ import {useNavigate, useParams} from "react-router-dom";
 import {BsFillStarFill} from 'react-icons/bs';
 import shortid from "shortid";
 import {Covid} from "../components/covid";
+import DatePicker, {registerLocale, setDefaultLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {de} from 'date-fns/locale';
 
 function Rating() {
     const [ErrorMessage, setErrorMessage] = useState('');
@@ -12,6 +15,9 @@ function Rating() {
     const [interStars, setInterStars] = useState([star()])
     const [covidStars, setCovidStars] = useState([star()])
     const [covidNumbers, setCovidNumbers] = useState([0,0,0,0])
+    const [startDate, setStartDate] = useState(new Date());
+    registerLocale('de', de)
+    setDefaultLocale("de")
     let navigate = useNavigate();
     let {id} = useParams();
     let {mod} = useParams()
@@ -81,7 +87,7 @@ function Rating() {
         event.preventDefault();
         console.log("Submitting rating...")
         setErrorMessage("")
-        const response = await fetch('http://localhost:8000/ratings/create', {
+        const response = await fetch('https://reqres.in/api/posts', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -99,7 +105,8 @@ function Rating() {
                 //The following are optional. However, either all of them or none of them must be sent.
                 title: document.getElementById("titel").value,
                 comment: document.getElementById("comment").value,
-                anonymous: document.getElementById("checkboxAnonym").checked
+                anonymous: document.getElementById("checkboxAnonym").checked,
+                date: startDate,
             })
         })
         const responseCode = response.status;
@@ -185,9 +192,9 @@ function Rating() {
                                     <h5 className="card-title">COVID-19 Zahlen: Mannheim</h5>
                                     <p className="card-text" style={{textAlign: "left", lineHeight: 2}}>
                                         🦠 Fälle in dieser Woche: {covidNumbers[0]}<br/>
-                                        📌 Wocheninzidenz: {covidNumbers[1]}<br/>
-                                        ☠️Tode pro Woche: {covidNumbers[2]}<br/>
-                                        🏛️ Einwohnerzahlen: {covidNumbers[3]}<br/>
+                                        📌 7-Tage-Inzidenz: {covidNumbers[1]}<br/>
+                                        ☠️ Tode pro Woche: {covidNumbers[2]}<br/>
+                                        🏛️ Einwohnerzahl: {covidNumbers[3]}<br/>
                                     </p>
                                 </div>
                             </div>
@@ -205,22 +212,47 @@ function Rating() {
                             </div>
                         </div>
                     </div>
+                    <div className="row">
+                        <div className="col">
+                        <div className="mb-3 m-3">
+                            <label htmlFor="titelInput" className="form-label">Titel</label>
+                            <input type="text" className="form-control" id="titel"
+                                   placeholder="Beste Vorlesung aller Zeiten!"/>
+                        </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col">
+                        <div className="mb-3 m-3">
+                            <label htmlFor="commentInput" className="form-label">Gib hier deinen Kommentar ein!</label>
+                            <textarea className="form-control" id="comment" rows="3" placeholder="Die Zeit verging wie im Flug und ..."></textarea>
+                        </div>
+                        </div>
+                    </div>
+                    <div className="row" style={{marginBottom: 20}} >
+                        <div className="col">
+                            <label>
+                                Wähle das Datum deiner Vorlesung aus:
+                            </label>
+                            <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} locale="de"/>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col">
+                            <div className="form-check form-switch">
+                                <input type="checkbox" className="form-check-input" id="checkboxAnonym"/>
+                                <label className="form-check-label" htmlFor="checkboxAnonym">
+                                    Willst du deine Bewertung anonym
+                                    abgeben? </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col">
+                        <button type="submit" style={{margin: 20}} className="btn btn-primary">Senden</button>
+                        </div>
+                    </div>
                 </div>
-                <div className="mb-3 m-3">
-                    <label htmlFor="titelInput" className="form-label">Titel</label>
-                    <input type="text" className="form-control" id="titel"
-                           placeholder="Beste Vorlesung aller Zeiten!"/>
-                </div>
-                <div className="mb-3 m-3">
-                    <label htmlFor="commentInput" className="form-label">Gib hier deinen Kommentar ein!</label>
-                    <textarea className="form-control" id="comment" rows="3" placeholder="Die Zeit verging wie im Flug und ..."></textarea>
-                </div>
-                <div className="form-check form-switch">
-                    <input type="checkbox" className="form-check-input" id="checkboxAnonym"/>
-                    <label className="form-check-label" htmlFor="checkboxAnonym">Willst du deine Bewertung anonym
-                        abgeben?</label>
-                </div>
-                <button type="submit" style={{margin: 20}} className="btn btn-primary">Senden</button>
             </form>
             {ErrorMessage}
         </div>
