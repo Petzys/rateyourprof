@@ -7,10 +7,12 @@ function Prof() {
     const [results, setResults] = useState([]);
     let {id} = useParams();
 
+    //function to get the modules of a prof from the database on page load
     useEffect(() => {
         call();
     }, []);
 
+    //function to get the modules of a prof from the database
     async function call() {
         setErrorMessage("")
         const response = await fetch('http://localhost:8000/users/profs/modules', {
@@ -40,6 +42,7 @@ function Prof() {
         }
     }
 
+    //function to create the cards of the modules as DOM elements
     function createCards(data) {
         setResults([])
         for (let x in data) {

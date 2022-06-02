@@ -6,9 +6,13 @@ function Main() {
     const [search, setSearch] = useState('');
     const [results, setResults] = useState([]);
     const [data, setData] = useState({})
+
+    //function to get the profs from the database on page load
     useEffect(() => {
         submitSearch();
     }, []);
+
+    //function to get the profs from the database
     async function submitSearch () {
         setResults([])
         setErrorMessage("")
@@ -36,6 +40,7 @@ function Main() {
         }
     }
 
+    //function to get the matches of the profs and the searchword and create DOM elements
     function getMatches () {
         let matchArray = []
         let idArray = []

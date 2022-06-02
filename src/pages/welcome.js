@@ -5,6 +5,7 @@ function Welcome() {
     const [ErrorMessage, setErrorMessage] = useState('');
     let navigate = useNavigate();
 
+    //function submit the login form
     async function submitUserdata () {
         setErrorMessage("")
         const response = await fetch('http://localhost:8000/users/login', {

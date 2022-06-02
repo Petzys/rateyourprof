@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Call the backend for ratings (in axios for jest)
 class ModuleApi {
     async call() {
         const response = await axios.post('https://reqres.in/api/posts', {

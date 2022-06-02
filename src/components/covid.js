@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// COVID-19 API caller (in axios for jest)
 class Covid {
     async getCovidNumbers() {
         const districtNum = "08222";

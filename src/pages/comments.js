@@ -5,11 +5,13 @@ function Comments() {
     const [ErrorMessage, setErrorMessage] = useState('');
     const [dateList, setDateList] = useState([]);
     const [commentList, setCommentList] = useState([]);
-    const [pickedDate, setPickedDate] = useState({});
+
+    //funtion to get the comments from the database on page load
     useEffect(() => {
         submitSearch();
     }, []);
 
+    //function to get the comments from the database
     async function submitSearch() {
         setDateList([])
         setErrorMessage("")
@@ -56,63 +58,77 @@ function Comments() {
         }
     }
 
-    function createDates (data) {
+    //function to create the dates for the date list
+    function createDates(data) {
         let dateArray = []
         for (let i in data) {
-            if (!dateArray.includes(data[i].datum)) {
-                let dateFormatted = new Date(data[i].datum)
-                dateArray.push(dateFormatted)
+            const testdate = dateArray.find(
+                date => date.toString() === new Date(data[i].datum).toString(),
+            );
+            if (testdate === undefined) {
+                dateArray.push(new Date(data[i].datum))
             }
         }
         return dateArray
     }
 
-    function createComments (data) {
-        let commentArray = []
-        for (let i in data) {
-            commentArray.push(data[i].comment)
-        }
-        return commentArray
+    //function to call when a date is picked
+    function newPickedDate(data, date) {
+        console.log(date)
+        createCommentList(data, date)
     }
 
-
-    function createDateList (data, pickedDate) {
+    //function to create the date list
+    function createDateList(data, defaultpickedDate) {
         let dateArray = createDates(data)
+        console.log(dateArray)
         setDateList([])
-        setPickedDate(pickedDate)
         for (let i in dateArray) {
             setDateList(dates => [...dates,
                 React.createElement('li',
-                    {key: shortid.generate(), onClick: () => (setPickedDate(dateArray[i]), console.log(pickedDate)),className:"list-group-item list-group-item-action list-group-item-primary"},
+                    {
+                        key: shortid.generate(),
+                        onClick: () => newPickedDate(data, dateArray[i]),
+                        className: "list-group-item list-group-item-action list-group-item-primary"
+                    },
                     dateArray[i].getDate() + "." + (new Date(data[i].datum).getMonth() + 1) + "." + new Date(data[i].datum).getFullYear())]);
-
         }
-        createCommentList(data)
-        return dateList
+        createCommentList(data, defaultpickedDate)
     }
 
-    function createCommentList (data) {
-        let commentArray = createComments(data)
-        for (let i in commentArray) {
-            let testDate = new Date(data[i].datum)
-            console.log("Testdate " + testDate)
-            console.log(pickedDate)
-            if (testDate === pickedDate) {
-                console.log(commentArray[i])
-                setCommentList(comments => [...comments,
-                    React.createElement("div", {key: shortid.generate(), className: "row"},
-                        React.createElement("div", {
-                                key: shortid.generate(),
-                                className: "card p-3 mb-2 bg-dark text-white"
-                            },
-                            React.createElement("div", {key: shortid.generate(), className: "card-body"},
-                                React.createElement("h5", {
-                                    key: shortid.generate(),
-                                    className: "card-title"
-                                }, data[i].titel),)),
-                        React.createElement("p", {key: shortid.generate(), className: "card-text"}, data[i].comment),
-                    )]);
+    //function to create the comment list for the picked date as DOM elements
+    function createCommentList(data, pickedDate) {
+        let commentIndexArray = []
+        for (let i in data) {
+            if (new Date(data[i].datum).toString() === pickedDate.toString()) {
+                commentIndexArray.push(i)
             }
+        }
+        console.log(commentIndexArray)
+        setCommentList([])
+        for (let i in commentIndexArray) {
+            console.log(commentIndexArray[i])
+            setCommentList(comments => [...comments,
+                React.createElement("div", {key: shortid.generate(), className: "row"},
+                    React.createElement("div", {
+                            key: shortid.generate(),
+                            className: "card p-3 mb-2 bg-dark text-white w-100"
+                        },
+                        React.createElement("div", {key: shortid.generate(), className: "card-body"},
+                            React.createElement("h5", {
+                                key: shortid.generate(),
+                                className: "card-title",
+                                style: {color: "#FF7500"}
+                            }, data[commentIndexArray[i]].titel),
+                            React.createElement("h6", {
+                                key: shortid.generate(),
+                                className: "card-subtitle mb-2 text-muted"
+                            }, data[commentIndexArray[i]].name),
+                            React.createElement("p", {
+                                key: shortid.generate(),
+                                className: "card-text"
+                            }, data[commentIndexArray[i]].comment),
+                        )))]);
         }
     }
 
@@ -133,16 +149,8 @@ function Comments() {
                             {dateList}
                         </ul>
                     </div>
-                    <div className="col">
-                        <div className="card p-3 mb-2 bg-dark text-white">
-                            <div className="card-body">
-                                <h5 className="card-title">Card title</h5>
-                                <h6 className="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                                <p className="card-text">Some quick example text to build on the card title and make up
-                                    the bulk of the card's content.</p>
-                                {commentList}
-                            </div>
-                        </div>
+                    <div className="col" style={{marginRight: 30, marginLeft: 12}}>
+                        {commentList}
                     </div>
                 </div>
             </div>

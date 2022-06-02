@@ -11,6 +11,7 @@ function Module() {
     let {mod} = useParams();
     let navigate = useNavigate();
 
+    //function to get the modules ratings from the database on page load
     useEffect(() => {
         const moduleApi = new ModuleApi();
         moduleApi.call().then(response => {
@@ -24,6 +25,7 @@ function Module() {
 
     }, []);
 
+    //function to create the progress bars
     function createProgressBar(num, ratings) {
         return React.createElement("div", {key: shortid.generate(), className: "progress"},
             React.createElement("div", {
@@ -35,7 +37,7 @@ function Module() {
                     "aria-valuemin": "0",
                     "aria-valuemax": "100"
                 },
-                ratings[num]
+                `${ratings[num]}%`
             ))
     }
 

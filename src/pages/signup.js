@@ -9,6 +9,7 @@ function Signup() {
     const [ErrorMessage, setErrorMessage] = useState('');
     let navigate = useNavigate();
 
+    //function submit the signup form
     async function submitUserdata () {
         setErrorMessage("")
         const response = await fetch('http://localhost:8000/users/create', {

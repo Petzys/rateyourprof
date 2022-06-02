@@ -22,6 +22,7 @@ function Rating() {
     let {id} = useParams();
     let {mod} = useParams()
 
+    //function to get the Covid numbers from the API on page load
     useEffect(() => {
         const covid = new Covid();
         covid.getCovidNumbers().then(ans => {
@@ -32,6 +33,48 @@ function Rating() {
         });
     }, []);
 
+    //function to submit the rating form
+    async function submitUserdata (event) {
+        event.preventDefault();
+        console.log("Submitting rating...")
+        setErrorMessage("")
+        const response = await fetch('https://reqres.in/api/posts', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                prof: Number(id),
+                module: Number(mod),
+                stars: {
+                    Tempo: tempoStars.length,
+                    Nachvollziehbarkeit: nachStars.length,
+                    Anschaulichkeit: anschauStars.length,
+                    Interaktivität: interStars.length
+                },
+                //The following are optional. However, either all of them or none of them must be sent.
+                title: document.getElementById("titel").value,
+                comment: document.getElementById("comment").value,
+                anonymous: document.getElementById("checkboxAnonym").checked,
+                date: startDate,
+            })
+        })
+        const responseCode = response.status;
+        console.log(responseCode)
+        switch (responseCode) {
+            case 201:
+                console.log("Rating successfully submitted")
+                navigate(`/prof/${id}/module/${mod}`)
+                break;
+            default:
+                console.log("Unknown error")
+                setErrorMessage("Es ist ein Fehler aufgetreten.")
+                break;
+        }
+    }
+
+    //function to create the stars
     function setStars(id, value) {
         switch (id) {
             case "tempo":
@@ -79,48 +122,9 @@ function Rating() {
         }
     }
 
+    //function to create a single star
     function star() {
-        return React.createElement(BsFillStarFill, {size: 50, key: shortid.generate()})
-    }
-
-    async function submitUserdata (event) {
-        event.preventDefault();
-        console.log("Submitting rating...")
-        setErrorMessage("")
-        const response = await fetch('https://reqres.in/api/posts', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                prof: Number(id),
-                module: Number(mod),
-                stars: {
-                    Tempo: tempoStars.length,
-                    Nachvollziehbarkeit: nachStars.length,
-                    Anschaulichkeit: anschauStars.length,
-                    Interaktivität: interStars.length
-                },
-                //The following are optional. However, either all of them or none of them must be sent.
-                title: document.getElementById("titel").value,
-                comment: document.getElementById("comment").value,
-                anonymous: document.getElementById("checkboxAnonym").checked,
-                date: startDate,
-            })
-        })
-        const responseCode = response.status;
-        console.log(responseCode)
-        switch (responseCode) {
-            case 201:
-                console.log("Rating successfully submitted")
-                navigate(`/prof/${id}/module/${mod}`)
-                break;
-            default:
-                console.log("Unknown error")
-                setErrorMessage("Es ist ein Fehler aufgetreten.")
-                break;
-        }
+        return React.createElement(BsFillStarFill, {size: 50, key: shortid.generate(), style: {color: "gold", marginRight: "5px"}})
     }
 
     return (
@@ -192,7 +196,7 @@ function Rating() {
                                     <h5 className="card-title">COVID-19 Zahlen: Mannheim</h5>
                                     <p className="card-text" style={{textAlign: "left", lineHeight: 2}}>
                                         🦠 Fälle in dieser Woche: {covidNumbers[0]}<br/>
-                                        📌 7-Tage-Inzidenz: {covidNumbers[1]}<br/>
+                                        📌 7-Tage-Inzidenz: {Math.round(covidNumbers[1])}<br/>
                                         ☠️ Tode pro Woche: {covidNumbers[2]}<br/>
                                         🏛️ Einwohnerzahl: {covidNumbers[3]}<br/>
                                     </p>
@@ -234,7 +238,7 @@ function Rating() {
                             <label>
                                 Wähle das Datum deiner Vorlesung aus:
                             </label>
-                            <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} locale="de"/>
+                            <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} locale="de" popperPlacement="auto"/>
                         </div>
                     </div>
                     <div className="row">
