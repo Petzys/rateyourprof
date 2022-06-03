@@ -1,3 +1,11 @@
+## Frontend: RateYourProf (React)
+
+- Created in Student Project
+- Find standard React Readme below
+- Depends mostly on Bootstrap
+
+--------------------------------------------------------------------------------
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
