@@ -9,10 +9,12 @@ import Module from "./pages/module";
 import Rating from "./pages/rating";
 import Comments from "./pages/comments";
 import './index.css'
+import Profile from "./pages/profile";
+import {BsPersonFill} from "react-icons/bs";
 function App() {
   return (
       <>
-          <Navbar variant="light" expand="lg" style={{backgroundColor: "lightgray"}}>
+          <Navbar variant="light" expand="lg" style={{backgroundColor: "#fff"}}>
               <Container>
                   <Navbar.Brand as={Link} to="/">
                       <img
@@ -28,6 +30,7 @@ function App() {
                       <Nav.Link href="/main">Suche</Nav.Link>
                       <Nav.Link href="/welcome">Anmelden</Nav.Link>
                       <Nav.Link href="/signup">Registrieren</Nav.Link>
+                      <Nav.Link href="/profile"><BsPersonFill size={25}/> </Nav.Link>
                   </Nav>
               </Container>
           </Navbar>
@@ -41,6 +44,7 @@ function App() {
                   <Route path="/prof/:id/module/:mod" element={<Module />} />
                   <Route path="/prof/:id/module/:mod/rating" element={<Rating />} />
                   <Route path="/prof/:id/module/:mod/comments" element={<Comments />} />
+                  <Route path="/profile" element={<Profile />} />
                   <Route path='*' element={<NotFound />} />
               </Routes>
           </div>

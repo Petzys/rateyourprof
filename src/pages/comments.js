@@ -1,10 +1,14 @@
 import React, {useEffect, useState} from "react";
 import shortid from "shortid";
+import {useParams} from "react-router-dom";
+import Tokenheader from "../components/tokenheader";
 
 function Comments() {
     const [ErrorMessage, setErrorMessage] = useState('');
     const [dateList, setDateList] = useState([]);
     const [commentList, setCommentList] = useState([]);
+    let {id} = useParams();
+    let {mod} = useParams();
 
     //funtion to get the comments from the database on page load
     useEffect(() => {
@@ -15,38 +19,28 @@ function Comments() {
     async function submitSearch() {
         setDateList([])
         setErrorMessage("")
-        const response = await fetch('https://reqres.in/api/posts', {
+
+        const response = await fetch('http://localhost:8000/ratings/getComments', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${JSON.parse(localStorage.getItem("token"))}`
             },
-            body: JSON.stringify([
-                {
-                    titel: "Titel1", //Leerer string falls nur sterne
-                    comment: "Passt",//Leer falls nur sterne
-                    name: "Klaus", //ggf. leerer String
-                    datum: "2012-04-23T18:25:43.511Z",
-                },
-                {
-                    titel: "Titel2",
-                    comment: "Net so geil",
-                    name: "Dieter",
-                    datum: "2013-04-23T18:25:43.511Z",
-                },
-                {
-                    titel: "Titel3",
-                    comment: "LOL",
-                    name: "Ulrich",
-                    datum: "2012-04-23T18:25:43.511Z",
-                },
-            ])
+            body: JSON.stringify({
+                    prof: Number(id),
+                    module: Number(mod),
+                })
         })
         const responseCode = response.status;
         switch (responseCode) {
-            case 201:
+            case 200:
                 console.log("Search successful")
-                const data = await response.json()
+                let data = await response.json()
+                console.log(JSON.stringify(data))
+                for (let x in data) {
+                    data[x].datum = convertUnixTimeToDate(data[x].date)
+                }
                 console.log(data)
                 let defaultPickedDate = new Date(data[0].datum)
                 createDateList(data, defaultPickedDate)
@@ -56,6 +50,10 @@ function Comments() {
                 setErrorMessage("Es ist ein Fehler aufgetreten.")
                 break;
         }
+    }
+
+    function convertUnixTimeToDate(unixTime) {
+        return new Date(unixTime * 1000);
     }
 
     //function to create the dates for the date list
@@ -119,7 +117,7 @@ function Comments() {
                                 key: shortid.generate(),
                                 className: "card-title",
                                 style: {color: "#FF7500"}
-                            }, data[commentIndexArray[i]].titel),
+                            }, data[commentIndexArray[i]].title),
                             React.createElement("h6", {
                                 key: shortid.generate(),
                                 className: "card-subtitle mb-2 text-muted"

@@ -53,11 +53,11 @@ function Rating() {
                     Anschaulichkeit: anschauStars.length,
                     Interaktivität: interStars.length
                 },
+                date: Math.floor(startDate.getTime() / 1000),
                 //The following are optional. However, either all of them or none of them must be sent.
                 title: document.getElementById("titel").value,
                 comment: document.getElementById("comment").value,
                 anonymous: document.getElementById("checkboxAnonym").checked,
-                date: startDate,
             })
         })
         const responseCode = response.status;

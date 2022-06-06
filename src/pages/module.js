@@ -14,10 +14,10 @@ function Module() {
     //function to get the modules ratings from the database on page load
     useEffect(() => {
         const moduleApi = new ModuleApi();
-        moduleApi.call().then(response => {
+        moduleApi.call(id, mod).then(response => {
             const ratings = response.ratings
             const moduleName = response.moduleName
-            setProgressBars([createProgressBar(0, ratings), createProgressBar(1, ratings), createProgressBar(2, ratings), createProgressBar(3, ratings)])
+            setProgressBars([createProgressBar(0, ratings), createProgressBar(1, ratings), createProgressBar(2, ratings), createProgressBar(3, ratings), createProgressBar(4, ratings)])
             setModuleName(moduleName)
         } ).catch(error => {
             setErrorMessage("Es ist ein Fehler aufgetreten: " + error)
@@ -79,6 +79,12 @@ function Module() {
                             <th scope="row">Interaktivität</th>
                             <td>
                                 {ProgressBars[3]}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Umsetzung der Corona Maßnahmen</th>
+                            <td>
+                                {ProgressBars[4]}
                             </td>
                         </tr>
                         </tbody>

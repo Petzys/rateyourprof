@@ -19,13 +19,19 @@ function Welcome() {
                     password: document.getElementById("InputPassword").value,
             })
         })
-        const data = await response.json();
-        console.log(JSON.stringify(data));
-        if (data.authenticated === true) { //Je nach Rückgabe abzuändern
-            console.log("Success")
-            navigate(`/main`)
-        } else {
-            setErrorMessage("Es ist ein Fehler aufgetreten.")
+        const responseCode = response.status;
+        switch (responseCode){
+            case 200:
+                console.log("Success")
+                if (response.data.accessToken) {
+                    localStorage.setItem("token", JSON.stringify(response.data.jwt));
+                }
+                navigate(`/main`)
+                break;
+            default:
+                console.log("Unknown error")
+                setErrorMessage("Es ist ein Fehler aufgetreten.")
+                break;
         }
     }
 
