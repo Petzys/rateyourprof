@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import shortid from "shortid";
 import {useParams} from "react-router-dom";
-import Tokenheader from "../components/tokenheader";
 
 function Comments() {
     const [ErrorMessage, setErrorMessage] = useState('');
