@@ -45,6 +45,14 @@ function Comments() {
                 let defaultPickedDate = new Date(data[0].datum)
                 createDateList(data, defaultPickedDate)
                 break;
+            case 401:
+                console.log("Not logged in")
+                setErrorMessage("Du bist nicht eingeloggt.")
+                break;
+            case 403:
+                console.log("Not authorized")
+                setErrorMessage("Du hast nicht die nötigen Rechte.")
+                break;
             default:
                 console.log("Unknown error")
                 setErrorMessage("Es ist ein Fehler aufgetreten.")

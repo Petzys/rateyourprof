@@ -20,10 +20,9 @@ function Prof() {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`
             },
             body: JSON.stringify({
-                email: "Testmail232344",
-                password: "1234",
                 prof: Number(id)
             })
         })
@@ -34,6 +33,14 @@ function Prof() {
                 const data = await response.json()
                 console.log(JSON.stringify(data))
                 createCards(data)
+                break;
+            case 401:
+                console.log("Not logged in")
+                setErrorMessage("Du bist nicht eingeloggt.")
+                break;
+            case 403:
+                console.log("Not authorized")
+                setErrorMessage("Du hast nicht die nötigen Rechte.")
                 break;
             default:
                 console.log("Unknown error")

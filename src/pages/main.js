@@ -21,6 +21,7 @@ function Main() {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`
             },
         })
         const responseCode = response.status;
@@ -32,6 +33,14 @@ function Main() {
                 setData(newData)
                 console.log(JSON.stringify(data))
                 getMatches()
+                break;
+            case 401:
+                console.log("Not logged in")
+                setErrorMessage("Du bist nicht eingeloggt.")
+                break;
+            case 403:
+                console.log("Not authorized")
+                setErrorMessage("Du hast nicht die nötigen Rechte.")
                 break;
             default:
                 console.log("Unknown error")

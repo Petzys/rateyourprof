@@ -12,6 +12,8 @@ import './index.css'
 import Profile from "./pages/profile";
 import {BsPersonFill} from "react-icons/bs";
 function App() {
+    const isLoggedIn = localStorage.getItem("token") !== null;
+
   return (
       <>
           <Navbar variant="light" expand="lg" style={{backgroundColor: "#fff"}}>
@@ -27,10 +29,10 @@ function App() {
                       {'  '}RateYourProf
                   </Navbar.Brand>
                   <Nav className="me-auto">
-                      <Nav.Link href="/main">Suche</Nav.Link>
-                      <Nav.Link href="/welcome">Anmelden</Nav.Link>
-                      <Nav.Link href="/signup">Registrieren</Nav.Link>
-                      <Nav.Link href="/profile"><BsPersonFill size={25}/> </Nav.Link>
+                      {isLoggedIn && (<Nav.Link href="/main">Suche</Nav.Link>)}
+                      {!isLoggedIn && (<Nav.Link href="/welcome">Anmelden</Nav.Link>)}
+                      {!isLoggedIn && (<Nav.Link href="/signup">Registrieren</Nav.Link>)}
+                      {isLoggedIn && (<Nav.Link href="/profile"><BsPersonFill size={25}/> </Nav.Link>)}
                   </Nav>
               </Container>
           </Navbar>

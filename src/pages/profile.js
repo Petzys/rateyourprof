@@ -14,24 +14,29 @@ function Profile() {
     async function getUserData () {
         setErrorMessage("")
         const response = await fetch('http://localhost:8000/users/profile/view', {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: email, //Replace with JWT authentication
-                password: password,
-            })
-        })
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`
+            }})
         const responseCode = response.status;
         switch (responseCode){
             case 200:
                 console.log("Profile view request was successful")
                 const data = await response.json()
-                setForename(data.forename)
-                setSurname(data.surname)
-                setEmail(data.email)
+                console.log(JSON.stringify(data))
+                setForename(data[0].forename)
+                setSurname(data[0].surname)
+                setEmail(data[0].email)
+                break;
+            case 401:
+                console.log("Not logged in")
+                setErrorMessage("Du bist nicht eingeloggt.")
+                break;
+            case 403:
+                console.log("Not authorized")
+                setErrorMessage("Du hast nicht die nötigen Rechte.")
                 break;
             default:
                 console.log("Unknown error")
@@ -43,13 +48,13 @@ function Profile() {
     async function submitUserdata () {
         setErrorMessage("")
         const response = await fetch('http://localhost:8000/users/profile/edit', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`
             },
             body: JSON.stringify({
-                email: document.getElementById("InputEmail"),
                 forename: document.getElementById("InputForename"),
                 surname: document.getElementById("InputSurname"),
                 password: document.getElementById("InputPassword"),
@@ -61,6 +66,14 @@ function Profile() {
                 console.log("Profile data changed successfully")
                 //Bootstrap Popup?
                 setModalMessage("Deine Daten wurden erfolgreich geändert!")
+                break;
+            case 401:
+                console.log("Not logged in")
+                setErrorMessage("Du bist nicht eingeloggt.")
+                break;
+            case 403:
+                console.log("Not authorized")
+                setErrorMessage("Du hast nicht die nötigen Rechte.")
                 break;
             default:
                 console.log("Unknown error")
@@ -97,10 +110,6 @@ function Profile() {
             <form style={{marginTop: 30}}>
                 <h3>Ändere jetzt deine Profildaten</h3>
                 <h6><i>Alles, was nicht geändert werden soll, bitte leer lassen.</i></h6>
-                <div className="mb-3">
-                    <label htmlFor="InputEmail" className="form-label">E-Mail-Adresse</label>
-                    <input type="email" className="form-control" id="InputEmail"/>
-                </div>
                 <div className="mb-3">
                     <label htmlFor="InputPassword" className="form-label">Passwort</label>
                     <input type="password" className="form-control" id="InputPassword"/>

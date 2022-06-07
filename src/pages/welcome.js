@@ -20,11 +20,13 @@ function Welcome() {
             })
         })
         const responseCode = response.status;
+        const data = await response.json();
+        console.log(data);
         switch (responseCode){
             case 200:
                 console.log("Success")
-                if (response.data.accessToken) {
-                    localStorage.setItem("token", JSON.stringify(response.data.jwt));
+                if (data.jwt) {
+                    localStorage.setItem("token", JSON.stringify(data.jwt));
                 }
                 navigate(`/main`)
                 break;

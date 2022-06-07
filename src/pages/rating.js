@@ -38,11 +38,12 @@ function Rating() {
         event.preventDefault();
         console.log("Submitting rating...")
         setErrorMessage("")
-        const response = await fetch('https://reqres.in/api/posts', {
+        const response = await fetch('http://localhost:8000/users/ratings/create', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`
             },
             body: JSON.stringify({
                 prof: Number(id),
@@ -51,7 +52,8 @@ function Rating() {
                     Tempo: tempoStars.length,
                     Nachvollziehbarkeit: nachStars.length,
                     Anschaulichkeit: anschauStars.length,
-                    Interaktivität: interStars.length
+                    Interaktivität: interStars.length,
+                    Corona: covidStars.length,
                 },
                 date: Math.floor(startDate.getTime() / 1000),
                 //The following are optional. However, either all of them or none of them must be sent.
@@ -66,6 +68,14 @@ function Rating() {
             case 201:
                 console.log("Rating successfully submitted")
                 navigate(`/prof/${id}/module/${mod}`)
+                break;
+            case 401:
+                console.log("Not logged in")
+                setErrorMessage("Du bist nicht eingeloggt.")
+                break;
+            case 403:
+                console.log("Not authorized")
+                setErrorMessage("Du hast nicht die nötigen Rechte.")
                 break;
             default:
                 console.log("Unknown error")

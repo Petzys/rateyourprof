@@ -22,11 +22,12 @@ function Signup() {
             })
         })
         const responseCode = response.status;
+        const data = await response.json();
         switch (responseCode){
             case 201:
                 console.log("User Added successfully")
-                if (response.data.accessToken) {
-                    localStorage.setItem("token", JSON.stringify(response.data.jwt));
+                if (data.jwt) {
+                    localStorage.setItem("token", JSON.stringify(data.jwt));
                 }
                 navigate(`/main`)
                 break;
