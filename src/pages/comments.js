@@ -36,11 +36,9 @@ function Comments() {
             case 200:
                 console.log("Search successful")
                 let data = await response.json()
-                console.log(JSON.stringify(data))
                 for (let x in data) {
                     data[x].datum = convertUnixTimeToDate(data[x].date)
                 }
-                console.log(data)
                 let defaultPickedDate = new Date(data[0].datum)
                 createDateList(data, defaultPickedDate)
                 break;
@@ -63,12 +61,19 @@ function Comments() {
         return new Date(unixTime * 1000);
     }
 
+    function convertDateToString(date) {
+        let day = date.getDate()
+        let month = date.getMonth() + 1
+        let year = date.getFullYear()
+        return day + "." + month + "." + year
+    }
+
     //function to create the dates for the date list
     function createDates(data) {
         let dateArray = []
         for (let i in data) {
             const testdate = dateArray.find(
-                date => date.toString() === new Date(data[i].datum).toString(),
+                date => (convertDateToString(date)) === convertDateToString(new Date(data[i].datum)),
             );
             if (testdate === undefined) {
                 dateArray.push(new Date(data[i].datum))
@@ -79,14 +84,12 @@ function Comments() {
 
     //function to call when a date is picked
     function newPickedDate(data, date) {
-        console.log(date)
         createCommentList(data, date)
     }
 
     //function to create the date list
     function createDateList(data, defaultpickedDate) {
         let dateArray = createDates(data)
-        console.log(dateArray)
         setDateList([])
         for (let i in dateArray) {
             setDateList(dates => [...dates,
@@ -96,7 +99,7 @@ function Comments() {
                         onClick: () => newPickedDate(data, dateArray[i]),
                         className: "list-group-item list-group-item-action list-group-item-primary"
                     },
-                    dateArray[i].getDate() + "." + (new Date(data[i].datum).getMonth() + 1) + "." + new Date(data[i].datum).getFullYear())]);
+                    dateArray[i].getDate() + "." + (dateArray[i].getMonth()+1) + "." + dateArray[i].getFullYear())]);
         }
         createCommentList(data, defaultpickedDate)
     }
@@ -105,14 +108,12 @@ function Comments() {
     function createCommentList(data, pickedDate) {
         let commentIndexArray = []
         for (let i in data) {
-            if (new Date(data[i].datum).toString() === pickedDate.toString()) {
+            if (convertDateToString(new Date(data[i].datum)) === convertDateToString(pickedDate)) {
                 commentIndexArray.push(i)
             }
         }
-        console.log(commentIndexArray)
         setCommentList([])
         for (let i in commentIndexArray) {
-            console.log(commentIndexArray[i])
             setCommentList(comments => [...comments,
                 React.createElement("div", {key: shortid.generate(), className: "row"},
                     React.createElement("div", {

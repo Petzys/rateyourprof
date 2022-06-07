@@ -38,7 +38,7 @@ function Rating() {
         event.preventDefault();
         console.log("Submitting rating...")
         setErrorMessage("")
-        const response = await fetch('http://localhost:8000/users/ratings/create', {
+        const response = await fetch('http://localhost:8000/ratings/create', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

@@ -55,9 +55,9 @@ function Profile() {
                 Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`
             },
             body: JSON.stringify({
-                forename: document.getElementById("InputForename"),
-                surname: document.getElementById("InputSurname"),
-                password: document.getElementById("InputPassword"),
+                forename: (((document.getElementById("InputForename").value).length > 0) ? document.getElementById("InputForename").value : forename),
+                surname: (((document.getElementById("InputSurname").value).length > 0) ? document.getElementById("InputSurname").value : surname),
+                password: (((document.getElementById("InputPassword").value).length > 0) ? document.getElementById("InputPassword").value : ""),
             })
         })
         const responseCode = response.status;
