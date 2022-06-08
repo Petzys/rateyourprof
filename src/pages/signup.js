@@ -6,7 +6,9 @@ function Signup() {
     let navigate = useNavigate();
 
     //function submit the signup form
-    async function submitUserdata () {
+    async function submitUserdata (event) {
+        event.preventDefault();
+        console.log("Submitting userdata");
         setErrorMessage("")
         const response = await fetch('http://localhost:8000/users/create', {
             method: 'POST',
@@ -15,10 +17,10 @@ function Signup() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                email: document.getElementById("InputEmail"),
-                forename: document.getElementById("InputForename"),
-                surname: document.getElementById("InputSurname"),
-                password: document.getElementById("InputPassword"),
+                email: document.getElementById("InputEmail").value,
+                forename: document.getElementById("InputForename").value,
+                surname: document.getElementById("InputSurname").value,
+                password: document.getElementById("InputPassword").value,
             })
         })
         const responseCode = response.status;
@@ -44,7 +46,7 @@ function Signup() {
 
     return (
         <div className="general">
-            <form>
+            <form onSubmit={submitUserdata}>
                 <p>Melde dich direkt an und gib deine Daten ein!</p>
                 <div className="mb-3">
                     <label htmlFor="InputEmail" className="form-label">E-Mail-Adresse</label>
@@ -62,7 +64,7 @@ function Signup() {
                     <label htmlFor="InputSurname" className="form-label">Nachname</label>
                     <input type="text" className="form-control" id="InputSurname"/>
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={() => submitUserdata()}>Senden</button>
+                <button type="submit" className="btn btn-primary">Senden</button>
                 <p>{ErrorMessage}</p>
             </form>
         </div>
