@@ -2,14 +2,13 @@ import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import '../App.css';
 function Signup() {
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
-    const [forename, setForename] = useState('');
-    const [surname, setSurname] = useState('');
     const [ErrorMessage, setErrorMessage] = useState('');
     let navigate = useNavigate();
 
-    async function submitUserdata () {
+    //function submit the signup form
+    async function submitUserdata (event) {
+        event.preventDefault();
+        console.log("Submitting userdata");
         setErrorMessage("")
         const response = await fetch('http://localhost:8000/users/create', {
             method: 'POST',
@@ -18,31 +17,25 @@ function Signup() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                email: email,
-                password: password,
-                name: forename,
-                //surname: surname,
-                //forename: forename,
+                email: document.getElementById("InputEmail").value,
+                forename: document.getElementById("InputForename").value,
+                surname: document.getElementById("InputSurname").value,
+                password: document.getElementById("InputPassword").value,
             })
         })
         const responseCode = response.status;
+        const data = await response.json();
         switch (responseCode){
             case 201:
                 console.log("User Added successfully")
+                if (data.jwt) {
+                    localStorage.setItem("token", JSON.stringify(data.jwt));
+                }
                 navigate(`/main`)
                 break;
-            case 200:
+            case 401:
                 console.log("Userdata already exists")
-                const data = await response.json();
-                console.log("Following data is duplicate: " + JSON.stringify(data));
-                switch (data.exists) {
-                    case "email":
-                        setErrorMessage("Deine E-Mail-Adresse existiert bereits!")
-                        break;
-                    case "name":
-                        setErrorMessage("Dein Name existiert bereits!")
-                        break;
-                }
+                setErrorMessage("E-Mail existiert bereits.")
                 break;
             default:
                 console.log("Unknown error")
@@ -53,25 +46,25 @@ function Signup() {
 
     return (
         <div className="general">
-            <form>
+            <form onSubmit={submitUserdata}>
                 <p>Melde dich direkt an und gib deine Daten ein!</p>
                 <div className="mb-3">
                     <label htmlFor="InputEmail" className="form-label">E-Mail-Adresse</label>
-                    <input type="email" className="form-control" id="InputEmail" onChange={e => setEmail(e.target.value)}/>
+                    <input type="email" className="form-control" id="InputEmail"/>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="InputPassword" className="form-label">Passwort</label>
-                    <input type="password" className="form-control" id="InputPassword" onChange={e => setPassword(e.target.value)}/>
+                    <input type="password" className="form-control" id="InputPassword"/>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="InputForename" className="form-label">Vorname</label>
-                    <input type="text" className="form-control" id="InputForename" onChange={e => setForename(e.target.value)}/>
+                    <input type="text" className="form-control" id="InputForename"/>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="InputSurname" className="form-label">Nachname</label>
-                    <input type="text" className="form-control" id="InputSurname" onChange={e => setSurname(e.target.value)}/>
+                    <input type="text" className="form-control" id="InputSurname"/>
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={() => submitUserdata()}>Senden</button>
+                <button type="submit" className="btn btn-primary">Senden</button>
                 <p>{ErrorMessage}</p>
             </form>
         </div>

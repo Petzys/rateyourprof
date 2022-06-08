@@ -1,53 +1,54 @@
 import React, {useEffect, useState} from "react";
 import shortid from "shortid";
+import {useParams} from "react-router-dom";
 
 function Comments() {
     const [ErrorMessage, setErrorMessage] = useState('');
     const [dateList, setDateList] = useState([]);
     const [commentList, setCommentList] = useState([]);
-    const [pickedDate, setPickedDate] = useState({});
+    let {id} = useParams();
+    let {mod} = useParams();
+
+    //funtion to get the comments from the database on page load
     useEffect(() => {
         submitSearch();
     }, []);
 
+    //function to get the comments from the database
     async function submitSearch() {
         setDateList([])
         setErrorMessage("")
-        const response = await fetch('https://reqres.in/api/posts', {
+
+        const response = await fetch('http://localhost:8000/ratings/getComments', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${JSON.parse(localStorage.getItem("token"))}`
             },
-            body: JSON.stringify([
-                {
-                    titel: "Titel1", //Leerer string falls nur sterne
-                    comment: "Passt",//Leer falls nur sterne
-                    name: "Klaus", //ggf. leerer String
-                    datum: "2012-04-23T18:25:43.511Z",
-                },
-                {
-                    titel: "Titel2",
-                    comment: "Net so geil",
-                    name: "Dieter",
-                    datum: "2013-04-23T18:25:43.511Z",
-                },
-                {
-                    titel: "Titel3",
-                    comment: "LOL",
-                    name: "Ulrich",
-                    datum: "2012-04-23T18:25:43.511Z",
-                },
-            ])
+            body: JSON.stringify({
+                    prof: Number(id),
+                    module: Number(mod),
+                })
         })
         const responseCode = response.status;
         switch (responseCode) {
-            case 201:
+            case 200:
                 console.log("Search successful")
-                const data = await response.json()
-                console.log(data)
+                let data = await response.json()
+                for (let x in data) {
+                    data[x].datum = convertUnixTimeToDate(data[x].date)
+                }
                 let defaultPickedDate = new Date(data[0].datum)
                 createDateList(data, defaultPickedDate)
+                break;
+            case 401:
+                console.log("Not logged in")
+                setErrorMessage("Du bist nicht eingeloggt.")
+                break;
+            case 403:
+                console.log("Not authorized")
+                setErrorMessage("Du hast nicht die nötigen Rechte.")
                 break;
             default:
                 console.log("Unknown error")
@@ -56,63 +57,84 @@ function Comments() {
         }
     }
 
-    function createDates (data) {
+    function convertUnixTimeToDate(unixTime) {
+        return new Date(unixTime * 1000);
+    }
+
+    function convertDateToString(date) {
+        let day = date.getDate()
+        let month = date.getMonth() + 1
+        let year = date.getFullYear()
+        return day + "." + month + "." + year
+    }
+
+    //function to create the dates for the date list
+    function createDates(data) {
         let dateArray = []
         for (let i in data) {
-            if (!dateArray.includes(data[i].datum)) {
-                let dateFormatted = new Date(data[i].datum)
-                dateArray.push(dateFormatted)
+            const testdate = dateArray.find(
+                date => (convertDateToString(date)) === convertDateToString(new Date(data[i].datum)),
+            );
+            if (testdate === undefined) {
+                dateArray.push(new Date(data[i].datum))
             }
         }
         return dateArray
     }
 
-    function createComments (data) {
-        let commentArray = []
-        for (let i in data) {
-            commentArray.push(data[i].comment)
-        }
-        return commentArray
+    //function to call when a date is picked
+    function newPickedDate(data, date) {
+        createCommentList(data, date)
     }
 
-
-    function createDateList (data, pickedDate) {
+    //function to create the date list
+    function createDateList(data, defaultpickedDate) {
         let dateArray = createDates(data)
         setDateList([])
-        setPickedDate(pickedDate)
         for (let i in dateArray) {
             setDateList(dates => [...dates,
                 React.createElement('li',
-                    {key: shortid.generate(), onClick: () => (setPickedDate(dateArray[i]), console.log(pickedDate)),className:"list-group-item list-group-item-action list-group-item-primary"},
-                    dateArray[i].getDate() + "." + (new Date(data[i].datum).getMonth() + 1) + "." + new Date(data[i].datum).getFullYear())]);
-
+                    {
+                        key: shortid.generate(),
+                        onClick: () => newPickedDate(data, dateArray[i]),
+                        className: "list-group-item list-group-item-action list-group-item-primary"
+                    },
+                    dateArray[i].getDate() + "." + (dateArray[i].getMonth()+1) + "." + dateArray[i].getFullYear())]);
         }
-        createCommentList(data)
-        return dateList
+        createCommentList(data, defaultpickedDate)
     }
 
-    function createCommentList (data) {
-        let commentArray = createComments(data)
-        for (let i in commentArray) {
-            let testDate = new Date(data[i].datum)
-            console.log("Testdate " + testDate)
-            console.log(pickedDate)
-            if (testDate === pickedDate) {
-                console.log(commentArray[i])
-                setCommentList(comments => [...comments,
-                    React.createElement("div", {key: shortid.generate(), className: "row"},
-                        React.createElement("div", {
-                                key: shortid.generate(),
-                                className: "card p-3 mb-2 bg-dark text-white"
-                            },
-                            React.createElement("div", {key: shortid.generate(), className: "card-body"},
-                                React.createElement("h5", {
-                                    key: shortid.generate(),
-                                    className: "card-title"
-                                }, data[i].titel),)),
-                        React.createElement("p", {key: shortid.generate(), className: "card-text"}, data[i].comment),
-                    )]);
+    //function to create the comment list for the picked date as DOM elements
+    function createCommentList(data, pickedDate) {
+        let commentIndexArray = []
+        for (let i in data) {
+            if (convertDateToString(new Date(data[i].datum)) === convertDateToString(pickedDate)) {
+                commentIndexArray.push(i)
             }
+        }
+        setCommentList([])
+        for (let i in commentIndexArray) {
+            setCommentList(comments => [...comments,
+                React.createElement("div", {key: shortid.generate(), className: "row"},
+                    React.createElement("div", {
+                            key: shortid.generate(),
+                            className: "card p-3 mb-2 bg-dark text-white w-100"
+                        },
+                        React.createElement("div", {key: shortid.generate(), className: "card-body"},
+                            React.createElement("h5", {
+                                key: shortid.generate(),
+                                className: "card-title",
+                                style: {color: "#FF7500"}
+                            }, data[commentIndexArray[i]].title),
+                            React.createElement("h6", {
+                                key: shortid.generate(),
+                                className: "card-subtitle mb-2 text-muted"
+                            }, data[commentIndexArray[i]].name),
+                            React.createElement("p", {
+                                key: shortid.generate(),
+                                className: "card-text"
+                            }, data[commentIndexArray[i]].comment),
+                        )))]);
         }
     }
 
@@ -133,19 +155,12 @@ function Comments() {
                             {dateList}
                         </ul>
                     </div>
-                    <div className="col">
-                        <div className="card p-3 mb-2 bg-dark text-white">
-                            <div className="card-body">
-                                <h5 className="card-title">Card title</h5>
-                                <h6 className="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                                <p className="card-text">Some quick example text to build on the card title and make up
-                                    the bulk of the card's content.</p>
-                                {commentList}
-                            </div>
-                        </div>
+                    <div className="col" style={{marginRight: 30, marginLeft: 12}}>
+                        {commentList}
                     </div>
                 </div>
             </div>
+            {ErrorMessage}
         </div>
     );
 }

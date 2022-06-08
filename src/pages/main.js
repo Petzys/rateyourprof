@@ -6,9 +6,13 @@ function Main() {
     const [search, setSearch] = useState('');
     const [results, setResults] = useState([]);
     const [data, setData] = useState({})
+
+    //function to get the profs from the database on page load
     useEffect(() => {
         submitSearch();
     }, []);
+
+    //function to get the profs from the database
     async function submitSearch () {
         setResults([])
         setErrorMessage("")
@@ -17,6 +21,7 @@ function Main() {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`
             },
         })
         const responseCode = response.status;
@@ -29,6 +34,14 @@ function Main() {
                 console.log(JSON.stringify(data))
                 getMatches()
                 break;
+            case 401:
+                console.log("Not logged in")
+                setErrorMessage("Du bist nicht eingeloggt.")
+                break;
+            case 403:
+                console.log("Not authorized")
+                setErrorMessage("Du hast nicht die nötigen Rechte.")
+                break;
             default:
                 console.log("Unknown error")
                 setErrorMessage("Es ist ein Fehler aufgetreten.")
@@ -36,6 +49,7 @@ function Main() {
         }
     }
 
+    //function to get the matches of the profs and the searchword and create DOM elements
     function getMatches () {
         let matchArray = []
         let idArray = []

@@ -11,12 +11,13 @@ function Module() {
     let {mod} = useParams();
     let navigate = useNavigate();
 
+    //function to get the modules ratings from the database on page load
     useEffect(() => {
         const moduleApi = new ModuleApi();
-        moduleApi.call().then(response => {
+        moduleApi.call(id, mod).then(response => {
             const ratings = response.ratings
             const moduleName = response.moduleName
-            setProgressBars([createProgressBar(0, ratings), createProgressBar(1, ratings), createProgressBar(2, ratings), createProgressBar(3, ratings)])
+            setProgressBars([createProgressBar(0, ratings), createProgressBar(1, ratings), createProgressBar(2, ratings), createProgressBar(3, ratings), createProgressBar(4, ratings)])
             setModuleName(moduleName)
         } ).catch(error => {
             setErrorMessage("Es ist ein Fehler aufgetreten: " + error)
@@ -24,6 +25,7 @@ function Module() {
 
     }, []);
 
+    //function to create the progress bars
     function createProgressBar(num, ratings) {
         return React.createElement("div", {key: shortid.generate(), className: "progress"},
             React.createElement("div", {
@@ -35,7 +37,7 @@ function Module() {
                     "aria-valuemin": "0",
                     "aria-valuemax": "100"
                 },
-                ratings[num]
+                `${ratings[num]}%`
             ))
     }
 
@@ -77,6 +79,12 @@ function Module() {
                             <th scope="row">Interaktivität</th>
                             <td>
                                 {ProgressBars[3]}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Umsetzung der Corona Maßnahmen</th>
+                            <td>
+                                {ProgressBars[4]}
                             </td>
                         </tr>
                         </tbody>

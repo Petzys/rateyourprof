@@ -18,8 +18,7 @@ html, body, #app, #app>div {
 
 body {
   color: #fff;
-  background: rgb(30,107,174);
-  background: linear-gradient(to top, #1e3c72 0%, #1e3c72 1%, #2a5298 100%);
+  background:  #1e3c72;
   background-size: cover;
   height: 100%;
   width: 100%;
@@ -40,4 +39,9 @@ body {
   background-color: #0495c9;
   border-color: #357ebd;
   margin-bottom: 5px;
+}
+
+.form-control {
+  border-radius: 10px;
+  border-color: #FF7500;
 }
